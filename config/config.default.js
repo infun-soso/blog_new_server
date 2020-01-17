@@ -43,6 +43,18 @@ module.exports = appInfo => {
     agent: false,
   };
 
+  // 配置跨域
+  config.security = {
+    csrf: {
+      enable: false,
+    },
+    domainWhiteList: [ '*' ],
+  };
+  config.cors = {
+    origin: '*',
+    allowMethods: 'GET,HEAD,PUT,POST,DELETE,PATCH,OPTIONS',
+  };
+
   return {
     ...config,
     ...userConfig,

@@ -8,4 +8,5 @@ module.exports = app => {
   const { router, controller } = app;
   // 客户端api路由
   router.get('/default/getArticleList', controller.default.home.getArticleList);
+  router.get('/default/getArticleById/:id', controller.default.home.getArticleById);
 };
