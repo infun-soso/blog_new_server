@@ -50,6 +50,7 @@ module.exports = appInfo => {
     },
     domainWhiteList: [ '*' ],
   };
+
   config.cors = {
     origin: '*',
     allowMethods: 'GET,HEAD,PUT,POST,DELETE,PATCH,OPTIONS',
