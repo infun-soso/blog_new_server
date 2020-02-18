@@ -1,5 +1,6 @@
 
 'use strict';
+const ms = require('ms');
 
 const Controller = require('egg').Controller;
 
@@ -22,6 +23,7 @@ class MainController extends Controller {
       // 登录成功,进行session缓存
       const openId = new Date().getTime();
       this.ctx.session.openId = { openId };
+      this.ctx.session.maxAge = ms('2h');
       this.ctx.body = { code: 0, data: '登录成功', openId };
     } else {
       this.ctx.body = { code: 1, data: '登录失败' };
@@ -90,6 +92,37 @@ class MainController extends Controller {
       list: resList,
     };
 
+  }
+
+  // 删除文章
+  async delArticle() {
+    const id = this.ctx.params.id;
+    const res = await this.app.mysql.delete('article', { id });
+    this.ctx.body = {
+      code: 0,
+      data: res,
+    };
+  }
+
+  // 根据文章ID得到文章详情，用于修改文章
+  async getArticleById() {
+    const id = this.ctx.params.id;
+    console.log(id);
+    const sql = 'SELECT article.id as id,' +
+                'article.title as title,' +
+                'article.introduce as introduce,' +
+                'article.article_content as article_content,' +
+                'article.addTime * 1000 as addTime,' +
+                'article.view_count as view_count ,' +
+                'type.typeName as typeName ,' +
+                'type.id as typeId ' +
+                'FROM article LEFT JOIN type ON article.type_id = type.Id ' +
+                'WHERE article.id=' + id;
+    const result = await this.app.mysql.query(sql);
+    this.ctx.body = {
+      code: 0,
+      data: result,
+    };
   }
 }
 
