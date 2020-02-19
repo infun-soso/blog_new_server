@@ -52,7 +52,7 @@ module.exports = appInfo => {
   };
 
   config.cors = {
-    origin: 'http://localhost:3000',
+    origin: ctx => ctx.get('origin'),
     credentials: true,
     allowMethods: 'GET,HEAD,PUT,POST,DELETE,PATCH,OPTIONS',
   };
