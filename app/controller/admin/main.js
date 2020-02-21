@@ -6,11 +6,6 @@ const Controller = require('egg').Controller;
 
 class MainController extends Controller {
 
-  async index() {
-    // 首页的文章列表数据
-    this.ctx.body = 'hi api';
-  }
-
   async checkLogin() {
     const userName = this.ctx.request.body.userName;
     const password = this.ctx.request.body.password;
@@ -27,6 +22,32 @@ class MainController extends Controller {
       this.ctx.body = { code: 0, data: '登录成功', openId };
     } else {
       this.ctx.body = { code: 1, data: '登录失败' };
+    }
+  }
+
+  async signUp() {
+    const userName = this.ctx.request.body.userName;
+    const password = this.ctx.request.body.password;
+    const existence_sql = " SELECT userName FROM admin_user WHERE userName = '" + userName + "'";
+    const existence = await this.app.mysql.query(existence_sql);
+
+    if (existence.length > 0) {
+      this.ctx.body = { code: 1, data: '此账号已被注册' };
+      return;
+    }
+
+    const result = await this.app.mysql.insert('admin_user', {
+      userName,
+      password,
+      addTime: Date.now() / 1000,
+    });
+
+    const insertSuccess = result.affectedRows === 1;
+    // const insertId = result.insertId;
+    if (insertSuccess) {
+      this.ctx.body = { code: 0, data: '注册成功' };
+    } else {
+      this.ctx.body = { code: 1, data: '注册失败' };
     }
   }
 
@@ -85,6 +106,21 @@ class MainController extends Controller {
                 'type.typeName as typeName ' +
                 'FROM article LEFT JOIN type ON article.type_id = type.Id ' +
                 'ORDER BY article.id DESC ';
+
+    const resList = await this.app.mysql.query(sql);
+    this.ctx.body = {
+      code: 0,
+      list: resList,
+    };
+
+  }
+
+  // 获得用户列表
+  async getUserList() {
+    console.log('------');
+    const sql = 'SELECT id,' +
+                'userName,' +
+                "FROM_UNIXTIME(addTime,'%Y-%m-%d' ) as addTime FROM admin_user";
 
     const resList = await this.app.mysql.query(sql);
     this.ctx.body = {
