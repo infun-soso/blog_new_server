@@ -8,6 +8,8 @@ class HomeController extends Controller {
     const sql = 'SELECT article.id as id,' +
                 'article.title as title,' +
                 'article.introduce as introduce,' +
+                'article.likes as likes,' +
+                'article.cover_url as cover_url,' +
                 'FROM_UNIXTIME(article.addTime, "%Y-%m-%d %H:%i:%s" ) as addTime,' + // 将时间戳转为日期格式
                 'article.view_count as view_count ,' +
                 '.type.typeName as typeName ' +

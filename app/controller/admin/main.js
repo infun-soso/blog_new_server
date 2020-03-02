@@ -1,6 +1,7 @@
 
 'use strict';
 const ms = require('ms');
+const qiniu = require('qiniu');
 
 const Controller = require('egg').Controller;
 
@@ -102,7 +103,9 @@ class MainController extends Controller {
                 'article.title as title,' +
                 'article.introduce as introduce,' +
                 'article.view_count as view_count,' +
-                "FROM_UNIXTIME(article.addTime,'%Y-%m-%d' ) as addTime," +
+                'article.likes as likes,' +
+                'article.cover_url as cover_url,' +
+                "FROM_UNIXTIME(article.addTime,'%Y-%m-%d %H:%i:%s' ) as addTime," +
                 'type.typeName as typeName ' +
                 'FROM article LEFT JOIN type ON article.type_id = type.Id ' +
                 'ORDER BY article.id DESC ';
@@ -117,7 +120,6 @@ class MainController extends Controller {
 
   // 获得用户列表
   async getUserList() {
-    console.log('------');
     const sql = 'SELECT id,' +
                 'userName,' +
                 "FROM_UNIXTIME(addTime,'%Y-%m-%d' ) as addTime FROM admin_user";
@@ -158,6 +160,23 @@ class MainController extends Controller {
     this.ctx.body = {
       code: 0,
       data: result,
+    };
+  }
+
+  async getUploadToken() {
+    const bucket = 'blog';
+    const accessKey = '8Z3BdkVh2RyRuzsqVhAKK7Njo_6oUzlpSUt2M9Hf';
+    const secretKey = 'HNCkhVc169GbiZ_Fp-F-4YYjx5Pdb4bXDx-hws-v';
+
+    const mac = new qiniu.auth.digest.Mac(accessKey, secretKey);
+    const policyParams = { scope: bucket };
+    const putPolicy = new qiniu.rs.PutPolicy(policyParams);
+    const uploadToken = putPolicy.uploadToken(mac);
+    this.ctx.body = {
+      code: 0,
+      data: {
+        token: uploadToken,
+      },
     };
   }
 }

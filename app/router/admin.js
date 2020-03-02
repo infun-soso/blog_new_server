@@ -12,4 +12,5 @@ module.exports = app => {
   router.get('/admin/delArticle/:id', adminauth, controller.admin.main.delArticle);
   router.get('/admin/getArticleById/:id', adminauth, controller.admin.main.getArticleById);
   router.get('/admin/getUserList', adminauth, controller.admin.main.getUserList);
+  router.get('/admin/getUploadToken', adminauth, controller.admin.main.getUploadToken);
 };
