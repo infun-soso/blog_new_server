@@ -10,7 +10,6 @@ class MainController extends Controller {
   async checkLogin() {
     const userName = this.ctx.request.body.userName;
     const password = this.ctx.request.body.password;
-    console.log(userName, password);
     const sql = " SELECT userName FROM admin_user WHERE userName = '" + userName +
                   "' AND password = '" + password + "'";
 
@@ -78,16 +77,8 @@ class MainController extends Controller {
   // 修改文章
   async updateArticle() {
     const tmpArticle = this.ctx.request.body;
-    // console.log(tmpArticle.row, 223);
-    // const options = {
-    //   where: {
-    //     id: tmpArticle.id,
-    //   },
-    // };
-    console.log(tmpArticle);
     const result = await this.app.mysql.update('article', tmpArticle);
     const updateSuccess = result.affectedRows === 1;
-    console.log(updateSuccess);
     this.ctx.body = {
       code: 0,
       data: {
@@ -145,7 +136,6 @@ class MainController extends Controller {
   // 根据文章ID得到文章详情，用于修改文章
   async getArticleById() {
     const id = this.ctx.params.id;
-    console.log(id);
     const sql = 'SELECT article.id as id,' +
                 'article.title as title,' +
                 'article.introduce as introduce,' +
